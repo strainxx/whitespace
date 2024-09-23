@@ -18,6 +18,7 @@ private:
 	std::vector<int> stack{};
 };
 
+// Interpreter
 void runInstructions(std::vector<Instruction> instructions) {
 
 	Stack* stack = new Stack();
@@ -32,6 +33,8 @@ void runInstructions(std::vector<Instruction> instructions) {
 		case OP::OP_OUTC:
 			std::cout << (char)stack->get();
 			break;
+		case OP::OP_END:
+			return;
 		default:
 			break;
 		}

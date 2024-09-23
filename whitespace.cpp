@@ -44,8 +44,41 @@ const char* ops[] = {
     "OP_NOP",
 };
 
-Instruction parseInstruction(std::string line) {
-    // Returns instruction and instr length
+const char* program[] = {
+    "   	  	   ",
+    "	",
+    "     		  	 	",
+    "	",
+    "     		 		  ",
+    "	",
+    "     		 		  ",
+    "	",
+    "     		 				",
+    "	",
+    "     	 		  ",
+    "	",
+    "     	     ",
+    "	",
+    "     			 			",
+    "	",
+    "     		 				",
+    "	",
+    "     			  	 ",
+    "	",
+    "     		 		  ",
+    "	",
+    "     		  	  ",
+    "	",
+    "     	    	",
+    "	",
+    "  ",
+    "\n",
+    "\n",
+    "\n"
+};
+
+// Returns instruction and instr length
+static Instruction parseInstruction(std::string line) {
     Instruction instr{};
     instr.param = 0;
     instr.operand = OP::OP_NOP;
@@ -97,9 +130,21 @@ Instruction parseInstruction(std::string line) {
             instr.param = parseNumber(line.substr(instr.size + 1));
             instr.size += line.substr(instr.size + 1).length();
         }
+        if (line[instr.size] == '\t' && line[instr.size+1] == ' ')
+        {
+            instr.operand = OP::OP_COPY;
+            instr.param = parseNumber(line.substr(instr.size + 2));
+            instr.size += line.substr(instr.size + 2).length();
+        }
         else
         {
             std::cout << "[WARN] Operand not implemented!\n";
+        }
+        break;
+    case IMP::ARITH:
+        if (line[instr.size] == '\t' && line[instr.size + 1] == ' ')
+        {
+
         }
         break;
     default:
@@ -121,6 +166,48 @@ std::pair<Instruction, int> lfParse(Instruction instr_, std::string line) {
             instr.size += 2;
         }
         break;
+    case IMP::FLOW:
+        if (line[0] == '\n')
+        {
+            instr.operand = OP::OP_END;
+            instr.size += 1;
+        }
+        else if (line[0] == ' ' && line[1] == ' ')
+        {
+            instr.operand = OP::OP_MARK;
+            instr.size += 2;
+            instr.param = parseNumber(line.substr(2));
+            instr.size += line.substr(2).length();
+        }
+        else if (line[0] == ' ' && line[1] == '\t')
+        {
+            instr.operand = OP::OP_CALL;
+            instr.size += 2;
+            instr.param = parseNumber(line.substr(2));
+            instr.size += line.substr(2).length();
+        }
+        else if (line[0] == '\t' && line[1] == ' ')
+        {
+            instr.operand = OP::OP_JZ;
+            instr.size += 2;
+            instr.param = parseNumber(line.substr(2));
+            instr.size += line.substr(2).length();
+        }
+        else if (line[0] == '\t' && line[1] == '\t')
+        {
+            instr.operand = OP::OP_JBZ;
+            instr.size += 2;
+            instr.param = parseNumber(line.substr(2));
+            instr.size += line.substr(2).length();
+        }
+        else if (line[0] == '\t' && line[1] == '\n')
+        {
+            instr.operand = OP::OP_ENDSUB;
+            instr.size += 2;
+        }
+
+
+        break;
     default:
         std::cout << "[WARN] LF IMP not implemented\n";
         break;
@@ -133,23 +220,24 @@ int main()
     std::cout << "Whitespace lang!\n";
     std::cout << "Enter filename: \n";
 
-    std::string fname = "C:\\Users\\sasiska\\source\\repos\\whitespace\\x64\\Debug\\hi.ws";
+    //std::string fname = "C:\\Users\\sasiska\\source\\repos\\whitespace\\x64\\Debug\\hi.ws";
 
     //std::cin >> fname;
 
-    std::fstream inputFile(fname);
+    //std::fstream inputFile(fname);
 
-    if(!inputFile.is_open()){
-        std::cout << "Failed to open file\n";
-        return 1;
-    }
+    //if(!inputFile.is_open()){
+    //    std::cout << "Failed to open file\n";
+    //    return 1;
+    //}
 
     std::string line;
 
     Instruction lastInstr{};
     std::vector<Instruction> instructions{};
 
-    while (std::getline(inputFile, line))
+    //while (std::getline(inputFile, line))
+    for(std::string line: program)
     {
         line += '\n';
         std::string filteredLine = "";
